@@ -74,14 +74,6 @@ export default function SearchResultsScreen() {
   return (
     <ThemedView style={styles.container}>
       {/* 상태바 영역 */}
-      <View style={styles.statusBar}>
-        <ThemedText style={styles.statusText}>9:41 Mon Jun 10</ThemedText>
-        <View style={styles.statusIcons}>
-          <Ionicons name="wifi" size={16} color="#000" />
-          <ThemedText style={styles.batteryText}>100%</ThemedText>
-          <Ionicons name="battery-full" size={16} color="#000" />
-        </View>
-      </View>
 
       {/* X 버튼 */}
       <TouchableOpacity style={styles.closeButton} onPress={handleClosePress}>

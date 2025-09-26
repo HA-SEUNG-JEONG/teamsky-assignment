@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
-  Keyboard,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -37,29 +36,9 @@ export default function HomeScreen() {
     setIsSearchFocused(false);
   };
 
-  const handleClosePress = () => {
-    // 검색창 포커스 해제 및 키보드 숨김
-    Keyboard.dismiss();
-    setIsSearchFocused(false);
-    setSearchQuery("");
-  };
-
   return (
     <ThemedView style={styles.container}>
       {/* 상태바 영역 */}
-      <View style={styles.statusBar}>
-        <ThemedText style={styles.statusText}>9:41 Mon Jun 10</ThemedText>
-        <View style={styles.statusIcons}>
-          <Ionicons name="wifi" size={16} color="#000" />
-          <ThemedText style={styles.batteryText}>100%</ThemedText>
-          <Ionicons name="battery-full" size={16} color="#000" />
-        </View>
-      </View>
-
-      {/* X 버튼 */}
-      <TouchableOpacity style={styles.closeButton} onPress={handleClosePress}>
-        <Ionicons name="close" size={24} color="#000" />
-      </TouchableOpacity>
 
       {/* 검색창 */}
       <View style={styles.searchContainer}>
@@ -137,12 +116,6 @@ const styles = StyleSheet.create({
   },
   batteryText: {
     fontSize: 14
-  },
-  closeButton: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    zIndex: 1
   },
   searchContainer: {
     flex: 1,
