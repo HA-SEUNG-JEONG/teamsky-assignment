@@ -87,8 +87,12 @@ export default function HomeScreen() {
 
         {/* 검색 버튼 */}
         <TouchableOpacity
-          style={styles.searchButton}
+          style={[
+            styles.searchButton,
+            { opacity: searchQuery.trim() ? 1 : 0.43 }
+          ]}
           onPress={handleSearchPress}
+          disabled={!searchQuery.trim()}
         >
           <ThemedText style={styles.searchButtonText}>검색하기</ThemedText>
         </TouchableOpacity>
