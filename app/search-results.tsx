@@ -1,32 +1,40 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  Keyboard,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View
 } from "react-native";
 
-export default function HomeScreen() {
+export default function SearchResultsScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  useEffect(() => {
+    if (params.query) {
+      setSearchQuery(params.query as string);
+    }
+  }, [params.query]);
 
   const handleSearchPress = () => {
     if (searchQuery.trim()) {
-      // 검색 결과 화면으로 이동
-      router.push({
+      // 새로운 검색 수행
+      router.replace({
         pathname: "/search-results",
         params: { query: searchQuery }
       });
-    } else {
-      Alert.alert("알림", "검색어를 입력해주세요.");
     }
+  };
+
+  const handleClosePress = () => {
+    router.back();
   };
 
   const handleSearchFocus = () => {
@@ -37,12 +45,31 @@ export default function HomeScreen() {
     setIsSearchFocused(false);
   };
 
-  const handleClosePress = () => {
-    // 검색창 포커스 해제 및 키보드 숨김
-    Keyboard.dismiss();
-    setIsSearchFocused(false);
-    setSearchQuery("");
-  };
+  // 모의 검색 결과 데이터
+  const mockResults = [
+    {
+      id: 1,
+      title: "OPENRUN",
+      subtitle: "온라인에서 가장 빠르게 만나는 신상",
+      description:
+        "새로운 제품을 가장 빠르게 만날 수 있는 온라인 플랫폼입니다.",
+      category: "쇼핑"
+    },
+    {
+      id: 2,
+      title: "검색 결과 2",
+      subtitle: "관련된 내용",
+      description: "검색어와 관련된 추가 정보입니다.",
+      category: "일반"
+    },
+    {
+      id: 3,
+      title: "검색 결과 3",
+      subtitle: "더 많은 정보",
+      description: "다른 관련 검색 결과입니다.",
+      category: "정보"
+    }
+  ];
 
   return (
     <ThemedView style={styles.container}>
@@ -82,17 +109,35 @@ export default function HomeScreen() {
             onBlur={handleSearchBlur}
             returnKeyType="search"
             onSubmitEditing={handleSearchPress}
+            autoFocus
           />
         </View>
-
-        {/* 검색 버튼 */}
-        <TouchableOpacity
-          style={styles.searchButton}
-          onPress={handleSearchPress}
-        >
-          <ThemedText style={styles.searchButtonText}>검색하기</ThemedText>
-        </TouchableOpacity>
       </View>
+
+      {/* 검색 결과 */}
+      <ScrollView
+        style={styles.resultsContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {mockResults.map((result) => (
+          <TouchableOpacity key={result.id} style={styles.resultItem}>
+            <View style={styles.resultContent}>
+              <ThemedText style={styles.resultTitle}>{result.title}</ThemedText>
+              <ThemedText style={styles.resultSubtitle}>
+                {result.subtitle}
+              </ThemedText>
+              <ThemedText style={styles.resultDescription}>
+                {result.description}
+              </ThemedText>
+              <View style={styles.resultCategory}>
+                <ThemedText style={styles.categoryText}>
+                  {result.category}
+                </ThemedText>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
       {/* 하단 네비게이션 */}
       <View style={styles.bottomNavigation}>
@@ -141,10 +186,8 @@ const styles = StyleSheet.create({
     zIndex: 1
   },
   searchContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    paddingBottom: 20
   },
   searchBar: {
     flexDirection: "row",
@@ -155,8 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    width: "100%",
-    marginBottom: 20
+    width: "100%"
   },
   searchBarFocused: {
     borderColor: "#007AFF"
@@ -169,16 +211,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000"
   },
-  searchButton: {
-    backgroundColor: "#2E57FF",
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 8
+  resultsContainer: {
+    flex: 1,
+    paddingHorizontal: 20
   },
-  searchButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600"
+  resultItem: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#e9ecef"
+  },
+  resultContent: {
+    gap: 8
+  },
+  resultTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#007AFF"
+  },
+  resultSubtitle: {
+    fontSize: 14,
+    color: "#666",
+    fontWeight: "500"
+  },
+  resultDescription: {
+    fontSize: 14,
+    color: "#333",
+    lineHeight: 20
+  },
+  resultCategory: {
+    alignSelf: "flex-start",
+    backgroundColor: "#e3f2fd",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginTop: 4
+  },
+  categoryText: {
+    fontSize: 12,
+    color: "#1976d2",
+    fontWeight: "500"
   },
   bottomNavigation: {
     flexDirection: "row",
