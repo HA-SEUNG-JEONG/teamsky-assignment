@@ -1,7 +1,7 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -16,11 +16,12 @@ import {
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const router = useRouter();
+
+  const tintColor = useThemeColor({}, "tint");
+  const textColor = useThemeColor({}, "text");
 
   const handleSearchPress = () => {
-    if (searchQuery.trim()) {
-    } else {
+    if (searchQuery.trim() === "") {
       Alert.alert("알림", "검색어를 입력해주세요.");
     }
   };
@@ -46,17 +47,17 @@ export default function HomeScreen() {
           <View
             style={[
               styles.searchBar,
-              isSearchFocused && styles.searchBarFocused
+              isSearchFocused && { borderColor: tintColor }
             ]}
           >
             <Ionicons
               name="search"
               size={20}
-              color="#007AFF"
+              color={tintColor}
               style={styles.searchIcon}
             />
             <TextInput
-              style={styles.searchInput}
+              style={[styles.searchInput, { color: textColor }]}
               placeholder="궁금한 이론이 있다면 검색해보세요."
               placeholderTextColor="#999"
               value={searchQuery}
@@ -65,6 +66,8 @@ export default function HomeScreen() {
               onBlur={handleSearchBlur}
               returnKeyType="search"
               onSubmitEditing={handleSearchPress}
+              accessibilityLabel="검색어 입력"
+              accessibilityHint="검색하고 싶은 이론을 입력하세요"
             />
           </View>
 
@@ -76,6 +79,9 @@ export default function HomeScreen() {
             ]}
             onPress={handleSearchPress}
             disabled={!searchQuery.trim()}
+            accessibilityLabel="검색하기"
+            accessibilityHint="입력한 검색어로 검색을 실행합니다"
+            accessibilityRole="button"
           >
             <ThemedText style={styles.searchButtonText}>검색하기</ThemedText>
           </TouchableOpacity>
@@ -83,11 +89,19 @@ export default function HomeScreen() {
 
         {/* 하단 네비게이션 */}
         <View style={styles.bottomNavigation}>
-          <TouchableOpacity style={styles.navItem}>
-            <Ionicons name="home" size={24} color="#007AFF" />
+          <TouchableOpacity
+            style={styles.navItem}
+            accessibilityLabel="학습"
+            accessibilityRole="button"
+          >
+            <Ionicons name="home" size={24} color={tintColor} />
             <ThemedText style={styles.navText}>학습</ThemedText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
+          <TouchableOpacity
+            style={styles.navItem}
+            accessibilityLabel="나의 서재"
+            accessibilityRole="button"
+          >
             <Ionicons name="person" size={24} color="#999" />
             <ThemedText style={styles.navText}>나의 서재</ThemedText>
           </TouchableOpacity>
@@ -139,9 +153,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     width: "100%",
     marginBottom: 20
-  },
-  searchBarFocused: {
-    borderColor: "#007AFF"
   },
   searchIcon: {
     marginRight: 12
