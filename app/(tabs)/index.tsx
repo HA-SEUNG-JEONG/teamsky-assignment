@@ -5,9 +5,11 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
+  Keyboard,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View
 } from "react-native";
 
@@ -18,11 +20,6 @@ export default function HomeScreen() {
 
   const handleSearchPress = () => {
     if (searchQuery.trim()) {
-      // 검색 결과 화면으로 이동
-      router.push({
-        pathname: "/search-results",
-        params: { query: searchQuery }
-      });
     } else {
       Alert.alert("알림", "검색어를 입력해주세요.");
     }
@@ -36,59 +33,67 @@ export default function HomeScreen() {
     setIsSearchFocused(false);
   };
 
-  return (
-    <ThemedView style={styles.container}>
-      {/* 상태바 영역 */}
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+    setIsSearchFocused(false);
+  };
 
-      {/* 검색창 */}
-      <View style={styles.searchContainer}>
-        <View
-          style={[styles.searchBar, isSearchFocused && styles.searchBarFocused]}
-        >
-          <Ionicons
-            name="search"
-            size={20}
-            color="#007AFF"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="궁금한 이론이 있다면 검색해보세요."
-            placeholderTextColor="#999"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onFocus={handleSearchFocus}
-            onBlur={handleSearchBlur}
-            returnKeyType="search"
-            onSubmitEditing={handleSearchPress}
-          />
+  return (
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <ThemedView style={styles.container}>
+        {/* 검색창 */}
+        <View style={styles.searchContainer}>
+          <View
+            style={[
+              styles.searchBar,
+              isSearchFocused && styles.searchBarFocused
+            ]}
+          >
+            <Ionicons
+              name="search"
+              size={20}
+              color="#007AFF"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="궁금한 이론이 있다면 검색해보세요."
+              placeholderTextColor="#999"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onFocus={handleSearchFocus}
+              onBlur={handleSearchBlur}
+              returnKeyType="search"
+              onSubmitEditing={handleSearchPress}
+            />
+          </View>
+
+          {/* 검색 버튼 */}
+          <TouchableOpacity
+            style={[
+              styles.searchButton,
+              { opacity: searchQuery.trim() ? 1 : 0.43 }
+            ]}
+            onPress={handleSearchPress}
+            disabled={!searchQuery.trim()}
+          >
+            <ThemedText style={styles.searchButtonText}>검색하기</ThemedText>
+          </TouchableOpacity>
         </View>
 
-        {/* 검색 버튼 */}
-        <TouchableOpacity
-          style={[
-            styles.searchButton,
-            { opacity: searchQuery.trim() ? 1 : 0.43 }
-          ]}
-          onPress={handleSearchPress}
-          disabled={!searchQuery.trim()}
-        >
-          <ThemedText style={styles.searchButtonText}>검색하기</ThemedText>
-        </TouchableOpacity>
-      </View>
-
-      {/* 하단 네비게이션 */}
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="home" size={24} color="#007AFF" />
-          <ThemedText style={styles.navText}>학습</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="person" size={24} color="#999" />
-          <ThemedText style={styles.navText}>나의 서재</ThemedText>
-        </TouchableOpacity>
-      </View>
-    </ThemedView>
+        {/* 하단 네비게이션 */}
+        <View style={styles.bottomNavigation}>
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="home" size={24} color="#007AFF" />
+            <ThemedText style={styles.navText}>학습</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navItem}>
+            <Ionicons name="person" size={24} color="#999" />
+            <ThemedText style={styles.navText}>나의 서재</ThemedText>
+          </TouchableOpacity>
+        </View>
+      </ThemedView>
+    </TouchableWithoutFeedback>
   );
 }
 
