@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   Alert,
+  Image,
   Keyboard,
   StyleSheet,
   TextInput,
@@ -94,7 +95,11 @@ export default function HomeScreen() {
             accessibilityLabel="학습"
             accessibilityRole="button"
           >
-            <Ionicons name="home" size={24} color={tintColor} />
+            <Image
+              source={require("@/assets/icon/house-line.png")}
+              style={styles.navIcon}
+              tintColor="#2E57FF"
+            />
             <ThemedText style={styles.navText}>학습</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -102,7 +107,11 @@ export default function HomeScreen() {
             accessibilityLabel="나의 서재"
             accessibilityRole="button"
           >
-            <Ionicons name="person" size={24} color="#999" />
+            <Image
+              source={require("@/assets/icon/user-alt-1.png")}
+              style={styles.navIcon}
+              tintColor="#999"
+            />
             <ThemedText style={styles.navText}>나의 서재</ThemedText>
           </TouchableOpacity>
         </View>
@@ -184,6 +193,10 @@ const styles = StyleSheet.create({
   navItem: {
     alignItems: "center",
     gap: 4
+  },
+  navIcon: {
+    width: 24,
+    height: 24
   },
   navText: {
     fontSize: 12,
