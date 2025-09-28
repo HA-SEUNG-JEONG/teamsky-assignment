@@ -1,6 +1,5 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -16,10 +15,6 @@ import {
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-
-  const tintColor = useThemeColor({}, "tint");
-  const textColor = useThemeColor({}, "text");
 
   const handleSearchPress = () => {
     if (searchQuery.trim() === "") {
@@ -27,17 +22,8 @@ export default function HomeScreen() {
     }
   };
 
-  const handleSearchFocus = () => {
-    setIsSearchFocused(true);
-  };
-
-  const handleSearchBlur = () => {
-    setIsSearchFocused(false);
-  };
-
   const dismissKeyboard = () => {
     Keyboard.dismiss();
-    setIsSearchFocused(false);
   };
 
   return (
@@ -45,31 +31,36 @@ export default function HomeScreen() {
       <ThemedView style={styles.container}>
         {/* 검색창 */}
         <View style={styles.searchContainer}>
-          <View
-            style={[
-              styles.searchBar,
-              isSearchFocused && { borderColor: tintColor }
-            ]}
-          >
+          <View style={styles.searchInputContainer}>
             <Ionicons
               name="search"
               size={20}
-              color={tintColor}
+              color="#999"
               style={styles.searchIcon}
             />
             <TextInput
-              style={[styles.searchInput, { color: textColor }]}
+              style={styles.searchInput}
               placeholder="궁금한 이론이 있다면 검색해보세요."
               placeholderTextColor="#999"
               value={searchQuery}
               onChangeText={setSearchQuery}
-              onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
               returnKeyType="search"
               onSubmitEditing={handleSearchPress}
               accessibilityLabel="검색어 입력"
               accessibilityHint="검색하고 싶은 이론을 입력하세요"
             />
+            <TouchableOpacity
+              onPress={() => setSearchQuery("")}
+              style={styles.clearButton}
+              accessibilityLabel="검색어 지우기"
+              accessibilityRole="button"
+            >
+              <Image
+                source={require("@/assets/icon/circle_x.png")}
+                style={styles.clearIcon}
+                tintColor="#999"
+              />
+            </TouchableOpacity>
           </View>
 
           {/* 검색 버튼 */}
@@ -129,7 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingTop: 50,
     paddingBottom: 10
   },
@@ -151,25 +142,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20
   },
-  searchBar: {
+  searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderWidth: 2,
-    borderColor: "#E5E5E7",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#ebebeb",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     width: "100%",
     marginBottom: 20
   },
   searchIcon: {
     marginRight: 12
   },
+  clearButton: {
+    padding: 4
+  },
+  clearIcon: {
+    width: 20,
+    height: 20
+  },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#000"
+    color: "#000",
+    paddingVertical: 8,
+    height: 40,
+    textAlignVertical: "center",
+    textAlign: "left"
   },
   searchButton: {
     backgroundColor: "#2E57FF",
